@@ -345,33 +345,75 @@ class _LoginPageState extends State<LoginPage> with TraceableClientMixin {
   Future<void> showInAppReviewIfNecessary(BuildContext context) async {
     final UserPreferences preferences = context.read<UserPreferences>();
 
-    if (!preferences.inAppReviewAlreadyAsked) {
+    if (true) {
       assert(mounted);
+      bool? enjoyingApp = await showDialog<bool>(
+        context: context,
+        builder: (BuildContext context) {
+          final AppLocalizations appLocalizations =
+          AppLocalizations.of(context);
 
-      if (await showDialog<bool>(
-            context: context,
-            builder: (BuildContext context) {
-              final AppLocalizations appLocalizations =
-                  AppLocalizations.of(context);
+          return SmoothAlertDialog(
+            body: Text("Are You enjoying this app?"),
+            positiveAction: SmoothActionButton(
+              text: "Yeah!",
+              onPressed: () async => Navigator.of(context).pop(
+                true
+              ),
+            ),
+            negativeAction: SmoothActionButton(
+              text: "Not really",
+              onPressed: () => Navigator.of(context).pop(false),
+            ),
+          );
+        },
+      );
+      if(enjoyingApp!=null && !enjoyingApp){
+        await showDialog<bool>(
+          context: context,
+          builder: (BuildContext context) {
+            final AppLocalizations appLocalizations =
+            AppLocalizations.of(context);
 
-              return SmoothAlertDialog(
-                title: appLocalizations.app_rating_dialog_title,
-                body: Text(appLocalizations.app_rating_dialog_body),
-                positiveAction: SmoothActionButton(
-                  text: appLocalizations.app_rating_dialog_positive_action,
-                  onPressed: () async => Navigator.of(context).pop(
+            return SmoothAlertDialog(
+              body: Text("I'm so sorry to hear that! Could you tell me what happened?"),
+              positiveAction: SmoothActionButton(
+                text: "Okay",
+                onPressed: () {
+                  print("opening feedback form");
+                  Navigator.of(context).pop(true);
+                  },
+              ),
+              negativeAction: SmoothActionButton(
+                text: "No!",
+                onPressed: () => Navigator.of(context).pop(false),
+              ),
+            );
+          },
+        );
+      }
+      if(enjoyingApp!=null && enjoyingApp){
+        await showDialog<bool>(
+          context: context,
+          builder: (BuildContext context) {
+            final AppLocalizations appLocalizations =
+            AppLocalizations.of(context);
+
+            return SmoothAlertDialog(
+              body: Text("Great! Let others know what you think of this app!"),
+              positiveAction: SmoothActionButton(
+                text: "Rate app",
+                onPressed: () async => Navigator.of(context).pop(
                     await ApplicationStore.openAppReview(),
-                  ),
-                ),
-                negativeAction: SmoothActionButton(
-                  text: appLocalizations.app_rating_dialog_negative_action,
-                  onPressed: () => Navigator.of(context).pop(false),
-                ),
-              );
-            },
-          ) ==
-          true) {
-        await preferences.markInAppReviewAsShown();
+              ),
+              ),
+              negativeAction: SmoothActionButton(
+                text: "No thanks",
+                onPressed: () => Navigator.of(context).pop(false),
+              ),
+            );
+          },
+        );
       }
     }
   }
