@@ -344,71 +344,71 @@ class _LoginPageState extends State<LoginPage> with TraceableClientMixin {
 
   Future<void> showInAppReviewIfNecessary(BuildContext context) async {
     final UserPreferences preferences = context.read<UserPreferences>();
-
-    if (true) {
+    if (!preferences.inAppReviewAlreadyAsked) {
       assert(mounted);
       bool? enjoyingApp = await showDialog<bool>(
         context: context,
         builder: (BuildContext context) {
           final AppLocalizations appLocalizations =
-          AppLocalizations.of(context);
+              AppLocalizations.of(context);
 
           return SmoothAlertDialog(
-            body: Text("Are You enjoying this app?"),
+            body: Text(appLocalizations.app_rating_dialog_title_enjoying_app),
             positiveAction: SmoothActionButton(
-              text: "Yeah!",
-              onPressed: () async => Navigator.of(context).pop(
-                true
-              ),
+              text: appLocalizations
+                  .app_rating_dialog_title_enjoying_positive_actions,
+              onPressed: () async => Navigator.of(context).pop(true),
             ),
             negativeAction: SmoothActionButton(
-              text: "Not really",
+              text: appLocalizations.not_really,
               onPressed: () => Navigator.of(context).pop(false),
             ),
           );
         },
       );
-      if(enjoyingApp!=null && !enjoyingApp){
+      if (enjoyingApp != null && !enjoyingApp) {
         await showDialog<bool>(
           context: context,
           builder: (BuildContext context) {
             final AppLocalizations appLocalizations =
-            AppLocalizations.of(context);
+                AppLocalizations.of(context);
 
             return SmoothAlertDialog(
-              body: Text("I'm so sorry to hear that! Could you tell me what happened?"),
+              body: Text(
+                  appLocalizations.app_rating_dialog_title_not_enjoying_app),
               positiveAction: SmoothActionButton(
-                text: "Okay",
+                text: appLocalizations.okay,
                 onPressed: () {
+                  //TODO: implement feedback form and link here
                   print("opening feedback form");
                   Navigator.of(context).pop(true);
-                  },
+                },
               ),
               negativeAction: SmoothActionButton(
-                text: "No!",
+                text: appLocalizations.not_really,
                 onPressed: () => Navigator.of(context).pop(false),
               ),
             );
           },
         );
       }
-      if(enjoyingApp!=null && enjoyingApp){
+      if (enjoyingApp != null && enjoyingApp) {
         await showDialog<bool>(
           context: context,
           builder: (BuildContext context) {
             final AppLocalizations appLocalizations =
-            AppLocalizations.of(context);
+                AppLocalizations.of(context);
 
             return SmoothAlertDialog(
-              body: Text("Great! Let others know what you think of this app!"),
+              body: Text(appLocalizations.app_rating_dialog_title),
               positiveAction: SmoothActionButton(
-                text: "Rate app",
+                text: appLocalizations.app_rating_dialog_positive_action,
                 onPressed: () async => Navigator.of(context).pop(
-                    await ApplicationStore.openAppReview(),
-              ),
+                  await ApplicationStore.openAppReview(),
+                ),
               ),
               negativeAction: SmoothActionButton(
-                text: "No thanks",
+                text: appLocalizations.ask_me_later_button_label,
                 onPressed: () => Navigator.of(context).pop(false),
               ),
             );
