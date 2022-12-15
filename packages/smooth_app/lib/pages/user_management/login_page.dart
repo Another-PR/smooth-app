@@ -392,8 +392,9 @@ class _LoginPageState extends State<LoginPage> with TraceableClientMixin {
           },
         );
       }
+      bool? userRatedApp;
       if (enjoyingApp != null && enjoyingApp) {
-        await showDialog<bool>(
+        userRatedApp =await showDialog<bool>(
           context: context,
           builder: (BuildContext context) {
             final AppLocalizations appLocalizations =
@@ -414,6 +415,9 @@ class _LoginPageState extends State<LoginPage> with TraceableClientMixin {
             );
           },
         );
+      }
+      if(userRatedApp!=null && userRatedApp) {
+        await preferences.markInAppReviewAsShown();
       }
     }
   }
